@@ -180,9 +180,18 @@
   </div>
 
   <div class="btn-wrap">
-    <button class="btn" onclick="document.getElementById('msg').innerText='Misión aceptada. Coordinamos lugar y hora'">Acepto la propuesta.</button>
+    <button class="btn" onclick="aceptarMision()">ACEPTO LA MISIÓN</button>
   </div>
   <div id="msg" class="confirm"></div>
 </div>
+
+<script>
+  function aceptarMision(){
+    document.getElementById('msg').innerText = 'Abriendo WhatsApp...';
+    var numero = '51955102217';
+    var mensaje = encodeURIComponent('Acepto la propuesta');
+    window.open('https://wa.me/' + numero + '?text=' + mensaje, '_blank');
+  }
+</script>
 </body>
 </html>
