@@ -128,9 +128,11 @@
   .btn-yes:active{transform:translateY(1px);}
   .btn-no{
     background:#ddd; color:#555;
+    transition: top 0.28s cubic-bezier(.34,1.56,.64,1), left 0.28s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-no.roaming{
     position:fixed;
     z-index:50;
-    transition: top 0.28s cubic-bezier(.34,1.56,.64,1), left 0.28s cubic-bezier(.34,1.56,.64,1);
   }
   .confirm{
     text-align:center; margin-top:14px; font-size:18px; min-height:24px;
@@ -150,7 +152,6 @@
 </head>
 <body>
 <div class="board">
-
   <div class="note torn header-note">
     <div class="pin"></div>
     <div class="eyebrow">COMUNICADO</div>
@@ -236,12 +237,17 @@
     btnNo.style.top = y + 'px';
   }
 
-  // posición inicial visible junto al otro botón
-  window.addEventListener('load', function(){
-    var rect = btnNo.getBoundingClientRect();
-    btnNo.style.left = rect.left + 'px';
-    btnNo.style.top = rect.top + 'px';
-  });
+  function activarFuga(){
+    if (!btnNo.classList.contains('roaming')){
+      var rect = btnNo.getBoundingClientRect();
+      btnNo.style.left = rect.left + 'px';
+      btnNo.style.top = rect.top + 'px';
+      btnNo.classList.add('roaming');
+      // forzar reflow para que la transición arranque desde esta posición
+      btnNo.offsetHeight;
+    }
+    moverBotonNo();
+  }
 
   function distancia(x1,y1,x2,y2){
     return Math.hypot(x1-x2, y1-y2);
@@ -255,7 +261,7 @@
     var cx = rect.left + rect.width/2;
     var cy = rect.top + rect.height/2;
     if (distancia(clientX, clientY, cx, cy) < radioEsquive){
-      moverBotonNo();
+      activarFuga();
       document.getElementById('taunt').innerText = frases[Math.floor(Math.random()*frases.length)];
     }
   }
@@ -270,7 +276,7 @@
 
   function intentoFallido(){
     intentos++;
-    moverBotonNo();
+    activarFuga();
     document.getElementById('taunt').innerText = frases[Math.floor(Math.random()*frases.length)] + ' (intento #' + intentos + ')';
   }
 
