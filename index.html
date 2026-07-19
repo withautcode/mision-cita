@@ -188,7 +188,7 @@
     <div class="cap">así ando sin ti</div>
   </div>
 
-  <div class="warning"> NO FALTES </div>
+  <div class="warning">⚠ NO FALTES ⚠</div>
 
   <div class="note torn ps-note">
     <div class="pin"></div>
@@ -205,10 +205,10 @@
 
 <script>
   var frases = [
-    'Ese botón no es para ti 😏',
+    'Ese botón no es para ti',
     'Casi... pero no',
     'Nooo tan rápido',
-    'Sigue intentando 😌',
+    'Sigue intentando',
     'Ese botón ya se cansó de decir que no',
     'Error 404: rechazo no encontrado',
     'El universo dice que no acepta el "no"',
@@ -217,14 +217,22 @@
   var intentos = 0;
   var btnNo = document.getElementById('btnNo');
 
+  function viewportSize(){
+    var vv = window.visualViewport;
+    var w = vv ? vv.width : document.documentElement.clientWidth;
+    var h = vv ? vv.height : document.documentElement.clientHeight;
+    return { w: w, h: h };
+  }
+
   function moverBotonNo(){
-    var margen = 20;
+    var margen = 16;
+    var vp = viewportSize();
     var anchoBtn = btnNo.offsetWidth || 110;
     var altoBtn = btnNo.offsetHeight || 46;
-    var maxX = window.innerWidth - anchoBtn - margen;
-    var maxY = window.innerHeight - altoBtn - margen;
-    var x = margen + Math.random() * Math.max(maxX - margen, 10);
-    var y = margen + Math.random() * Math.max(maxY - margen, 10);
+    var maxX = Math.max(vp.w - anchoBtn - margen, margen);
+    var maxY = Math.max(vp.h - altoBtn - margen, margen);
+    var x = margen + Math.random() * (maxX - margen);
+    var y = margen + Math.random() * (maxY - margen);
     btnNo.style.left = x + 'px';
     btnNo.style.top = y + 'px';
   }
@@ -240,11 +248,14 @@
     return Math.hypot(x1-x2, y1-y2);
   }
 
+  var esMovil = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  var radioEsquive = esMovil ? 60 : 110;
+
   function esquivarSiCerca(clientX, clientY){
     var rect = btnNo.getBoundingClientRect();
     var cx = rect.left + rect.width/2;
     var cy = rect.top + rect.height/2;
-    if (distancia(clientX, clientY, cx, cy) < 110){
+    if (distancia(clientX, clientY, cx, cy) < radioEsquive){
       moverBotonNo();
       document.getElementById('taunt').innerText = frases[Math.floor(Math.random()*frases.length)];
     }
@@ -253,7 +264,7 @@
   document.addEventListener('mousemove', function(e){
     esquivarSiCerca(e.clientX, e.clientY);
   });
-  document.addEventListener('touchstart', function(e){
+  document.addEventListener('touchmove', function(e){
     var t = e.touches[0];
     esquivarSiCerca(t.clientX, t.clientY);
   }, {passive:true});
